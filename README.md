@@ -4,7 +4,10 @@
 
 1. Memory Management and C++
 2. Memory Partitioning
-3. 
+3. The Heap
+4. Object Orientation
+5. The Three P's
+6. Constuctors and Destructors in C++ 
 
 ---
 ---
@@ -198,9 +201,11 @@ Different than something like Java we only declare the methods and variables (pr
 Scope-resolution must be used to define method in the class  
 The double-colon
 
-
 ```cpp
 {
+
+//class A could be forward declared in any situation, as most things can
+class A; //forward declaration... not necessary
 
 	class A
 	{
@@ -220,7 +225,7 @@ The double-colon
 	int nextId = 1000; //this would declare a Global variable
 	
 	
-	int getA() //this would define a function
+	int getA() //this would define a function rather than a method from the class 
 	{
 	
 		return this->a;
@@ -259,3 +264,104 @@ The double-colon
 
 }
 ```
+
+### Instantiation
+
+Create a variable of the object on the stack or one can be created through a pointer on the heap  
+
+* Using a pointer is much more common within C++ code
+
+
+```cpp
+circle c1;
+Circle* c2 = new Circle();
+```
+
+
+
+## Constuctors and Destructors in C++ 
+
+A **constructor** in a class is a function whose name is the same as the class name and is used to initialize objects
+
+A **destructor** is used to collect garbage
+
+```cpp
+{
+
+	class Queue {
+	
+		private:
+			int queue_size;
+		
+		protected: 
+			int *buffer;
+			int front;
+			int rear;
+			
+		public:
+			...
+	
+	}
+
+}
+```
+
+The constructor is defined below:   
+
+```cpp
+Queue(void) { //constructor
+
+	front = 0; rear = 0;
+	queue_size = 0;
+	buffer = NULL;
+
+}
+
+Queue(int n){ //constructor
+
+	front = 0; rear = 0;
+	queue_size = n;
+	buffer = new int[queue_size];
+
+} //constructor Overload
+
+
+```
+
+If it is put on the heap and we delete the pointer, it would now be a memory leak. We need garabge collection which is not automatically done for us with C++. The destructor allows us to delete everything from the object. Helping with our memory leak.
+*Destructor -->*
+
+```cpp
+virtual ~Queue(void) {
+
+	delete buffer;
+	buffer[]  = NULL;
+	
+}
+```
+
+
+### Combine Delete and Destructor
+
+```cpp
+void application(){
+
+	Queue *myQueue; //declare pointer only
+	myQueue = new Queue(500); //created in application
+	myQueue->enqueue(23); //add 23 on myQueue
+	myQueue->enqueue(8);
+	delete myQueue; //delete will call ~Queue();
+
+}
+```
+
+The destructor is called in *delete* function
+
+### Responsibilities of Garbage Collecting Heap Memory
+
+* Class-Writer: If heap memory is used (through new() operator) in the class (constructor) a destructor must be used to delete the memory - Class users are NOT responsible for the garbage collection of memory they did not explicitly create
+* For each new() operation, one must use a delete somewhere to delete the memory created by the new()
+
+
+
+
